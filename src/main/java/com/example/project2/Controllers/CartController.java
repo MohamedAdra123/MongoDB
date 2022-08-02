@@ -2,11 +2,17 @@ package com.example.project2.Controllers;
 
 import com.example.project2.DTO.CartDTO;
 import com.example.project2.DTO.ProductDTO;
+import com.example.project2.Model.Product;
 import com.example.project2.Resources.Imp.CartResource;
 import com.example.project2.DTO.CartDTO;
 import com.example.project2.DTO.ProductDTO;
 import com.example.project2.Resources.Imp.CartResource;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +24,12 @@ import java.util.List;
 public class CartController {
     @Autowired
     private CartResource cartResource;
-
+    MongoDatabase mongoDatabase;
     @GetMapping
     public ResponseEntity<List<CartDTO>> returnAllCarts(){
+        MongoClient mongoClient = MongoClients.create();
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient,"project");
+        mongoTemplate.createCollection(Product.class);
         return ResponseEntity.ok().body(cartResource.returnAllCarts());
     }
 
